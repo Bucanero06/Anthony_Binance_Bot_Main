@@ -25,4 +25,5 @@ def start_binance_bot():
     return app
 
 
-app = start_binance_bot()
+if __name__ == "BOTs.run_bot":
+    app = start_binance_bot()
