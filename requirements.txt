@@ -2,3 +2,7 @@ flask
 gunicorn
 requests
 ccxt
+
+jinja2
+python-dotenv
+Flask-Minify
