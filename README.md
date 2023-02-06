@@ -191,7 +191,7 @@ $ cd flask-soft-ui-dashboard-enh
 
 $ virtualenv env
 $ source env/bin/activate
-$ pip3 install -r requirements_deprecated.txt
+$ pip3 install -r requirements.txt
 ```
 
 <br />
