@@ -9,7 +9,7 @@ Brought you by - [@Bucanero06](https://github.com/Bucanero06), Copyright (c) 202
 
 <br />
 
-> Features
+> V4 - Features
 
 - `Up-to-date dependencies`, active versioning
 - `DB Tools`: SQLAlchemy ORM, `Flask-Migrate` (schema migrations)
