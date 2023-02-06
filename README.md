@@ -1,4 +1,4 @@
-# Stream-Bot
+# Stream-Bot (V3 --> V4 **add notes**)
 
 ![moonshot_solutions_logo.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Flogos%2Fmoonshot_solutions_logo.png)
 
