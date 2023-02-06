@@ -1,4 +1,5 @@
-# Stream-Bot (V3 --> V4 **add notes**)
+# Stream-Bot (V3 --> V4 **add notes**) 
+(readme.md is still being edited to include diffs between v3 and v4 as well as include deprecated instructions)
 
 ![moonshot_solutions_logo.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Flogos%2Fmoonshot_solutions_logo.png)
 
