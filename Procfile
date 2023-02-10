@@ -1,1 +1,1 @@
-web: gunicorn -b :5000  BOTs.run_bot:app --log-file=-
+web: gunicorn  BOTs.run_bot:app

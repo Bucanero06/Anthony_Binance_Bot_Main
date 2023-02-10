@@ -145,11 +145,6 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
         self.secret_key = env_config["SECRET_KEY"]
         self.enable_rate_limit = env_config["ENABLE_RATE_LIMIT"]
 
-
-
-
-        import time
-        time.sleep(10)
         try:
             webhook_passphrase = env_config["WEBHOOK_PASSPHRASE"]
 
@@ -166,6 +161,7 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
             self.log.debug(f'{exchange.options = }')
             self.log.debug(f'{exchange.verbose = }')
             self.log.debug(f'{exchange.set_sandbox_mode = }')
+            self.log.debug(f'exchange.fetch_balance() about to hit the API')
             balances = exchange.fetch_balance()
             self.log.debug(f'{balances = }')
 
