@@ -146,6 +146,10 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
         self.enable_rate_limit = env_config["ENABLE_RATE_LIMIT"]
 
 
+
+
+        import time
+        time.sleep(10)
         try:
             webhook_passphrase = env_config["WEBHOOK_PASSPHRASE"]
 
