@@ -1,1 +1,1 @@
-web: gunicorn  BOTs.run_bot:app
+web: gunicorn --config gunicorn-cfg.py BOTs.run_bot:app
