@@ -49,6 +49,9 @@ Brought you by - [@Bucanero06](https://github.com/Bucanero06), Copyright (c) 202
 ![project_dirs_part2.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Fproject_dirs_part2.png)![project_dirs_part1.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Fproject_dirs_part1.png)
 <br />
 
+> Genie Platform
+[Screencast from 02-14-2023 10:16:52 PM.webm](https://user-images.githubusercontent.com/60953006/218918792-ee14a3fb-e82f-461e-ac4a-7a4a9e5b0354.webm)
+
 ## ✨ Set-up
 
 ### ✨ Start the app in Docker
