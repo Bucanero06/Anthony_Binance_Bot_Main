@@ -42,7 +42,7 @@ DEBUG_WEBHOOK_MESSAGE = {
             "trailing_stop_loss_activation_percentage": -1
         },
         "dca_entries": {
-            "on_off": 0,
+            "on_off": 1,
             "total_amount": 0,  # defaults to trade size and then split into number of steps
             "opposite_boundary_percentage": 0.01,
             "number_of_steps": 2

@@ -230,7 +230,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
                     DCA_price = last_price - DCA_step_length * (
                             i + 1) if side == 'buy' else last_price + DCA_step_length * (i + 1)
 
-                    BOT.log.info(f"Sending {order_type} order  - {side} {DCA_quantity} {symbol}")
+                    BOT.log.info(f"Sending {order_type} order - {side} {DCA_quantity} {symbol}")
                     DCA_order = BOT.exchange.create_order(symbol=symbol, side=side, price=DCA_price,
                                                           type=order_type,
                                                           amount=DCA_quantity, params=position_params)
