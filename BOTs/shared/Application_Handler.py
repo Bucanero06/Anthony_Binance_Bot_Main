@@ -27,14 +27,14 @@ class CustomFormatter(logging.Formatter):
 
 class Application_Handler:
 
-    def __init__(self, application_name=__name__, host=None, port=None, test_mode=True, verbose='DEBUG',
-                 app_debug: bool = False,
+    def __init__(self, application_name=__name__, test_mode=True, verbose='DEBUG',
+                 app_debug: bool = False, app_object: Flask = None,
                  *args,
                  **kwargs):
         self.applications_name = application_name
         self.app_debug = app_debug
-        self.host_name = host
-        self.port = port
+
+
         '''
         test_mode = True will run the application in test mode, 
                         test webhook and endpoint_dict need to be provided at uptime to "up", 
@@ -49,7 +49,7 @@ class Application_Handler:
 
         assert verbose in ['INFO', 'DEBUG', 'WARNING', 'ERROR', 'CRITICAL'], \
             f"Verbose must be one of the following: INFO, DEBUG, WARNING, ERROR, CRITICAL 🚨 {verbose = }"
-        app = Flask(self.applications_name)
+        app = Flask(self.applications_name) if app_object is None else app_object
         app.logger.setLevel(logging.getLevelName(verbose))
 
         formatter = CustomFormatter()
@@ -101,16 +101,17 @@ class Application_Handler:
             self.ensure_endpoint(endpoint_info=endpoint_info)
             self.app.logger.info(f"Added Endpoint {endpoint_name} 🚀")
 
-    def up(self, test_webhook_message=None, test_endpoint_dict=None):
+    def up(self, test_webhook_message=None, test_endpoint_dict=None, ):
         self.app.logger.info(f"Running {self.applications_name}")
 
         if not self.test_mode:
             # self.app.run(debug=self.app_debug)
             use_reloader = False if self.app_debug else None
             import threading
-            threading.Thread(target=lambda: self.app.run(host=self.host_name, port=self.port, debug=self.app_debug,
-                                                         use_reloader=use_reloader)).start()
-
+            # threading.Thread(target=lambda: self.app.run(host=self.host_name, port=self.port, debug=self.app_debug,
+            #                                              use_reloader=use_reloader), daemon=True).start()
+            self.app.run(host=self.host, port=self.port, debug=self.app_debug,
+                         use_reloader=use_reloader)
             self.app.logger.info(f"{self.applications_name} is now listening for webhooks 🚀")
             self.app.logger.info("we live baby 🤖")
             return True

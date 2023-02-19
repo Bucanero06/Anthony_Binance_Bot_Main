@@ -1,5 +1,6 @@
 #
 import ccxt
+import pandas as pd
 
 
 class Binance_Orderbook_Handler:
@@ -22,6 +23,25 @@ class Binance_Orderbook_Handler:
 
         return order_book
 
+    @staticmethod
+    def create_order_history_table(order_history):
+        order_history_table = []
+        for order in order_history:
+            order_history_table.append({
+                "id": order["id"],
+                "symbol": order["symbol"],
+                "side": order["side"],
+                "type": order["type"],
+                "price": order["price"],
+                "amount": order["amount"],
+                "filled": order["filled"],
+                "remaining": order["remaining"],
+                "status": order["status"],
+                "timestamp": order["timestamp"],
+                "datetime": order["datetime"],
+                "fee": order["fee"],
+            })
+        return order_history_table
 
     def prepare_limit_price(BOT, order_book, quantity, side, last_price, max_orderbook_price_offset,
                             min_orderbook_price_offset):
@@ -74,7 +94,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
                       # BUY: activationPrice should be smaller than the latest price.
                       # SELL: activationPrice should be larger than the latest price.
                       DCA_bool=None,
-                      DCA_total_ammount=None,
+                      DCA_total_amount=None,
                       DCA_opposite_boundry_percentage=None,
                       DCA_number_of_steps=None,
                       ):
@@ -115,7 +135,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
 
             if DCA_bool:
                 DCA_step_length = position_order['price'] * DCA_opposite_boundry_percentage
-                DCA_quantity = DCA_total_ammount / DCA_number_of_steps  # fixme the quantity must meet the min quantity of the symbol allowed
+                DCA_quantity = DCA_total_amount / DCA_number_of_steps  # fixme the quantity must meet the min quantity of the symbol allowed
 
                 for i in range(DCA_number_of_steps):
                     DCA_price = position_order['price'] - DCA_step_length * (

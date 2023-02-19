@@ -1,4 +1,3 @@
-
 from BOTs.Binance_Bot.Binance_Orders_Handler import Binance_Orders_Handler
 from BOTs.Binance_Bot.debug_webhook_message import DEBUG_WEBHOOK_MESSAGE
 from BOTs.shared.Application_Handler import Application_Handler
@@ -7,6 +6,7 @@ from BOTs.shared.tempt_utils import ensure_bool
 from Indicators_Strategy_Handlers.Premium_Indicator_Handler import premium_indicator_function
 from time import sleep
 import ccxt
+
 
 class Persistent_Order_Handler(Binance_Orders_Handler):
     """This class is used to keep track of orders that have been placed and their status, the main use during the
@@ -20,6 +20,8 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
     breathing = False
 
     def __init__(self, tradingview_bot_function,
+                 app_object=None,
+                 host='localhost', port=None,
                  # redis_url="redis://localhost",
                  ):
         '''
@@ -45,6 +47,8 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
         # self.redis_url = redis_url
 
         self.dummy_orders_mode = None  # todo Not implemented yet
+        self.host = host
+        self.port = port
 
         from os import getenv
         env_config = dict(
@@ -70,8 +74,12 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
 
         # Initialize All Classes
         super().__init__(application_name=__name__,
+
                          test_mode=bool(self.test_mode) if self.test_mode != "live_test" else False,
-                         verbose=env_config["VERBOSE"])
+                         verbose=env_config["VERBOSE"],
+                         app_object=app_object,
+
+                         )
 
         # Prepare webhook
         self.tradingview_bot_function = tradingview_bot_function
@@ -153,6 +161,7 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
                 assert webhook_passphrase, "Add the WEBHOOK_PASSPHRASE variable to your environment variables 🚨"
                 assert exchange.apiKey, "Add the API_KEY variable to your environment variables 🚨"
                 assert exchange.secret, "Add the SECRET_KEY variable to your environment variables 🚨"
+
             except AssertionError as e:
                 self.log.error("Error during Exchange initialization: {}".format(e))
                 raise e
@@ -161,14 +170,13 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
             self.log.debug(f'{exchange.options = }')
             self.log.debug(f'{exchange.verbose = }')
             self.log.debug(f'{exchange.set_sandbox_mode = }')
-            self.log.debug(f'exchange.fetch_balance() about to hit the API')
-            balances = exchange.fetch_balance()
-            self.log.debug(f'{balances = }')
-
-            self.log.info(f'Asset Coins Free and Total 💱:')
-            for coin in ["BNB", "BTC", "ETH", "USDT", "USDC", "BUSD"]:
-                if balances[coin]['free'] > 0:
-                    self.log.info(f'   {coin} : {balances[coin]}')
+            # balances = exchange.fetch_balance()
+            # self.log.debug(f'{balances = }')
+            #
+            # self.log.info(f'Asset Coins Free and Total 💱:')
+            # for coin in ["BNB", "BTC", "ETH", "USDT", "USDC", "BUSD"]:
+            #     if balances[coin]['free'] > 0:
+            #         self.log.info(f'   {coin} : {balances[coin]}')
 
         except Exception as e:
             self.log.info(
@@ -223,24 +231,22 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
                                                   "Exit_Buy": 0, "Sell": 1, "Minimal_Sell": 0, "Strong_Sell": 0,
                                                   "Minimal_Strong_Sell": 0, "Exit_Sell": 0, "Clear_Orders": 0}})
         self.up(test_webhook_message=DEBUG_WEBHOOK_MESSAGE,
-                              test_endpoint_dict=self.bot_endpoints["tradingview_webhook_handler"])
+                test_endpoint_dict=self.bot_endpoints["tradingview_webhook_handler"])
         sleep(SLEEP_BETWEEN_UPDATES)
         DEBUG_WEBHOOK_MESSAGE.update({'Signals': {"Buy": 0, "Minimal_Buy": 0, "Strong_Buy": 0, "Minimal_Strong_Buy": 0,
                                                   "Exit_Buy": 0, "Sell": 0, "Minimal_Sell": 0, "Strong_Sell": 0,
                                                   "Minimal_Strong_Sell": 0, "Exit_Sell": 1, "Clear_Orders": 0}})
         self.up(test_webhook_message=DEBUG_WEBHOOK_MESSAGE,
-                              test_endpoint_dict=self.bot_endpoints["tradingview_webhook_handler"])
+                test_endpoint_dict=self.bot_endpoints["tradingview_webhook_handler"])
         sleep(SLEEP_BETWEEN_UPDATES)
         DEBUG_WEBHOOK_MESSAGE.update({'Signals': {"Buy": 0, "Minimal_Buy": 0, "Strong_Buy": 0, "Minimal_Strong_Buy": 0,
                                                   "Exit_Buy": 0, "Sell": 0, "Minimal_Sell": 0, "Strong_Sell": 0,
                                                   "Minimal_Strong_Sell": 0, "Exit_Sell": 0, "Clear_Orders": 1}})
         self.up(test_webhook_message=DEBUG_WEBHOOK_MESSAGE,
-                              test_endpoint_dict=self.bot_endpoints["tradingview_webhook_handler"])
+                test_endpoint_dict=self.bot_endpoints["tradingview_webhook_handler"])
         self.log.info(f"Time to run {perf_counter() - start} seconds")
         #
         self.log.info(f"Binance Bot ping {self.breathing} 🤖")
-
-
 
 
 if __name__ == "__main__":
@@ -256,8 +262,8 @@ if __name__ == "__main__":
     if binance_bot_client.test_mode:
         binance_bot_client.test_binance_bot()
     else:
-        # binance_bot_client.up()
-        binance_bot_client.test_binance_bot()
+        binance_bot_client.up()
+        # binance_bot_client.test_binance_bot()
 
     #
     binance_bot_client.log.info(f"Binance Bot ping {binance_bot_client.breathing} 🤖")
