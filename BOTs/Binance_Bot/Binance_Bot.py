@@ -59,7 +59,8 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
             ENABLE_RATE_LIMIT=getenv("ENABLE_RATE_LIMIT", default=True),
             EXCHANGE_TYPE=getenv("EXCHANGE_TYPE", default="future"),
             SANDBOX_MODE=getenv("SANDBOX_MODE", default=True),
-            EXCHANGE="binance",  # do not change at this moment
+            # EXCHANGE="binance",  # do not change at this moment
+            EXCHANGE=getenv("EXCHANGE", default="binance"),
 
             BOT_TEST_MODE=getenv("BOT_TEST_MODE",
                                  default=True if getenv("SANDBOX_MODE", default=True) else 'live_test'),
