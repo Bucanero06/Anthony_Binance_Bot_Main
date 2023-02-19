@@ -106,6 +106,11 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
         stopLossOrder = None
         trailingStopLossOrder = None
 
+        returning_order_dict = dict(
+        )
+
+
+
         try:
             '''Position Opening'''
             BOT.log.info(f"Sending {order_type} order  - {side} {quantity} {symbol}")
@@ -130,21 +135,9 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
                 # todo left here , when using the dca the gte behaviour is not working
                 position_order = BOT.exchange.create_order(symbol=symbol, side=side, price=limit_price, type=order_type,
                                                            amount=quantity, params=position_params)
+                returning_order_dict['position'] = position_order
             else:
                 raise Exception(f"Order type {order_type} not supported")
-
-            if DCA_bool:
-                DCA_step_length = position_order['price'] * DCA_opposite_boundry_percentage
-                DCA_quantity = DCA_total_amount / DCA_number_of_steps  # fixme the quantity must meet the min quantity of the symbol allowed
-
-                for i in range(DCA_number_of_steps):
-                    DCA_price = position_order['price'] - DCA_step_length * (
-                            i + 1) if side == 'buy' else position_order['price'] + DCA_step_length * (i + 1)
-                    BOT.log.info(f"Sending {order_type} order  - {side} {DCA_quantity} {symbol}")
-                    DCA_order = BOT.exchange.create_order(symbol=symbol, side=side, price=DCA_price,
-                                                          type=order_type,
-                                                          amount=DCA_quantity, params=position_params)
-                    BOT.log.info(f"Limit order for {DCA_quantity} placed at {DCA_price} {symbol}")
 
             '''Trade Management - Take Profit and Stop Loss'''
             # Try to place take_profit and stop_loss orders, however if we fail to do so, we will cancel the order
@@ -219,15 +212,32 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
             BOT.log.error(f"an exception occured - {e}")
             return False
 
-        returning_order_dict = dict(
-            position=position_order,
-        )
         if takeProfitOrder is not None:
             returning_order_dict['takeProfitOrder'] = takeProfitOrder
         if stopLossOrder is not None:
             returning_order_dict['stopLossOrder'] = stopLossOrder
         if trailingStopLossOrder is not None:
             returning_order_dict['trailingStopOrder'] = trailingStopLossOrder
+        if DCA_bool:
+            try:
+                # DCA_step_length = position_order['price'] * DCA_opposite_boundry_percentage
+                DCA_step_length = last_price * DCA_opposite_boundry_percentage
+                DCA_quantity = DCA_total_amount / DCA_number_of_steps  # fixme the quantity must meet the min quantity of the symbol allowed
+
+                for i in range(DCA_number_of_steps):
+                    # DCA_price = position_order['price'] - DCA_step_length * (
+                    #         i + 1) if side == 'buy' else position_order['price'] + DCA_step_length * (i + 1)
+                    DCA_price = last_price - DCA_step_length * (
+                            i + 1) if side == 'buy' else last_price + DCA_step_length * (i + 1)
+
+                    BOT.log.info(f"Sending {order_type} order  - {side} {DCA_quantity} {symbol}")
+                    DCA_order = BOT.exchange.create_order(symbol=symbol, side=side, price=DCA_price,
+                                                          type=order_type,
+                                                          amount=DCA_quantity, params=position_params)
+                    BOT.log.info(f"Limit order for {DCA_quantity} placed at {DCA_price} {symbol}")
+                    returning_order_dict[f'DCA_order_{i}'] = DCA_order
+            except Exception as e:
+                BOT.log.error(f"an exception occured - {e}")
 
         return returning_order_dict
 

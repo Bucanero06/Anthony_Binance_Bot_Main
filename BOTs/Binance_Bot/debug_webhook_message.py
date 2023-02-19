@@ -30,7 +30,7 @@ DEBUG_WEBHOOK_MESSAGE = {
     },
 
     "Trade_Management": {
-        "persistent_checks": 0,  # -1 or 0 = off, 1 = on # todo add this
+        # "persistent_checks": 0,  # -1 or 0 = off, 1 = on # todo add this
         # "place_orders_in_batch": 0,  # todo lets reduce the number of api calls by utilizing batch orders. add tp,sl, tsl batch orders
         "position_boundaries": {
             "take_profit": 0.25,
@@ -42,7 +42,7 @@ DEBUG_WEBHOOK_MESSAGE = {
             "trailing_stop_loss_activation_percentage": -1
         },
         "dca_entries": {
-            "on_off": 0,
+            "on_off": 1,
             "total_amount": 0,  # defaults to trade size and then split into number of steps
             "opposite_boundary_percentage": 0.01,
             "number_of_steps": 2
